@@ -27,7 +27,7 @@ func InitAction() {
 
 	// Empty SyncEnv file
 	syncfile := SyncEnvFile{
-		Entries: make([]SyncEnvEntry, 0),
+		Entries: make([]*SyncEnvEntry, 0),
 	}
 
 	_, err := os.Stat(floc)
@@ -119,4 +119,33 @@ func addAction() {
 	_add_env(floc, &syncfile)
 	fmt.Printf("Addition Action Completed\n")
 
+}
+
+func updateAction() {
+	var syncfile SyncEnvFile
+
+	floc, err := loadSyncEnvFile(&syncfile)
+	if err != nil {
+		return
+	}
+
+	fmt.Printf("Updating the requested variables...\n")
+	_update_env(floc, &syncfile)
+	fmt.Printf("Updation Action Completed\n")
+
+}
+
+func peekAction() {
+	var syncfile SyncEnvFile
+
+	_, err := loadSyncEnvFile(&syncfile)
+	if err != nil {
+		return
+	}
+
+	fmt.Printf("Peek results!!!\n\n")
+
+	for _, entry := range syncfile.Entries {
+		fmt.Printf("%s=%s\n", entry.Key, entry.Value)
+	}
 }

@@ -6,14 +6,14 @@ import (
 	"os"
 )
 
-// custom add flag
-type AddFlag []string
+// custom multi flag
+type MultiFlag []string
 
-func (i *AddFlag) String() string {
+func (i *MultiFlag) String() string {
 	return fmt.Sprintf("%v", *i)
 }
 
-func (i *AddFlag) Set(value string) error {
+func (i *MultiFlag) Set(value string) error {
 	*i = append(*i, value)
 	return nil
 }
@@ -21,7 +21,10 @@ func (i *AddFlag) Set(value string) error {
 var initFlag bool
 var unpackFlag bool
 var loadFlag bool
-var addFlag AddFlag
+var peekFlag bool
+
+var addFlag MultiFlag
+var updateFlag MultiFlag
 var SYNCENV_DIR string
 
 func init() {
@@ -47,20 +50,28 @@ func init() {
 	flag.BoolVar(&initFlag, "init", false, "Flag used to add current directory to SyncEnv")
 	flag.BoolVar(&unpackFlag, "unpack", false, "Flag used to unpack the variables")
 	flag.BoolVar(&loadFlag, "load", false, "Flag used to load the variables")
+	flag.BoolVar(&peekFlag, "peek", false, "Flag used to have a glance at stored variables")
 	flag.Var(&addFlag, "add", "Flag used to add variables")
+	flag.Var(&updateFlag, "update", "Flag used to update variables")
 
 }
 
 func main() {
 	flag.Parse()
+
+	// Only one action allowed per run
 	if initFlag {
 		InitAction()
 	} else if unpackFlag {
 		unPackAction()
 	} else if loadFlag {
 		loadAction()
+	} else if peekFlag {
+		peekAction()
 	} else if len(addFlag) != 0 {
 		addAction()
+	} else if len(updateFlag) != 0 {
+		updateAction()
 	}
 
 	fmt.Println()
