@@ -25,7 +25,7 @@ func InitAction() {
 	floc := fmt.Sprintf("%s/%s.json", SYNCENV_DIR, chash)
 
 	// Empty SyncEnv file
-	syncfie := SyncEnvFile{
+	syncfile := SyncEnvFile{
 		Entries: make([]SyncEnvEntry, 0),
 	}
 
@@ -34,7 +34,7 @@ func InitAction() {
 		if os.IsNotExist(err) {
 			fmt.Printf("Adding Current Directory to SyncEnv...\n")
 
-			data, _ := json.Marshal(syncfie)
+			data, _ := json.Marshal(syncfile)
 
 			// create an empty file
 			err = os.WriteFile(floc, data, 0702)
@@ -56,7 +56,7 @@ func InitAction() {
 
 }
 
-func LoadAction() {
+func unPackAction() {
 
 	cdir, _ := os.Getwd()
 
@@ -93,8 +93,8 @@ func LoadAction() {
 	if l == 0 {
 		return
 	}
-	fmt.Printf("Loading the Variables...\n")
+	fmt.Printf("Unpacking the Variables...\n")
 
-	_load_envs(&syncfile)
+	_unpack_envs(&syncfile, chash)
 
 }
