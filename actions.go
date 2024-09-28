@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"os"
 )
@@ -23,13 +24,20 @@ func InitAction() {
 	chash := hash(cdir)
 	floc := fmt.Sprintf("%s/%s.json", SYNCENV_DIR, chash)
 
+	// Empty SyncEnv file
+	syncfie := SyncEnvFile{
+		Entries: make([]SyncEnvEntry, 0),
+	}
+
 	_, err := os.Stat(floc)
 	if err != nil {
 		if os.IsNotExist(err) {
 			fmt.Printf("Adding Current Directory to SyncEnv...\n")
 
+			data, _ := json.Marshal(syncfie)
+
 			// create an empty file
-			err = os.WriteFile(floc, []byte{}, 0702)
+			err = os.WriteFile(floc, data, 0702)
 			if err != nil {
 				fmt.Println("Error in Creating the JSON:", err)
 				return
@@ -42,8 +50,51 @@ func InitAction() {
 			return
 		}
 	} else {
-		fmt.Printf("Current Directory already attached to SyncEnv!\nUse 'SyncEnv --load' to load the variables\n")
+		fmt.Printf("Current Directory already added to SyncEnv!\nUse 'SyncEnv --load' to load the variables\n")
 		return
 	}
+
+}
+
+func LoadAction() {
+
+	cdir, _ := os.Getwd()
+
+	chash := hash(cdir)
+	floc := fmt.Sprintf("%s/%s.json", SYNCENV_DIR, chash)
+
+	var syncfile SyncEnvFile
+
+	_, err := os.Stat(floc)
+	if err != nil {
+		if os.IsNotExist(err) {
+			fmt.Printf("Current Directory is not added to SyncEnv!\nUse 'SyncEnv --init' first to add the current directory\n")
+			return
+		}
+	}
+
+	fmt.Printf("Current Directory is in SyncEnv!\n")
+
+	data, err := os.ReadFile(floc)
+	if err != nil {
+		fmt.Println("Error in reading the file:", err)
+		return
+	}
+
+	err = json.Unmarshal(data, &syncfile)
+	if err != nil {
+		fmt.Println("Error in unpacking the file:", err)
+		return
+	}
+
+	l := len(syncfile.Entries)
+
+	fmt.Printf("Found %d entries\n", l)
+	if l == 0 {
+		return
+	}
+	fmt.Printf("Loading the Variables...\n")
+
+	_load_envs(&syncfile)
 
 }
