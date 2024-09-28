@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 )
 
 func hash(text string) string {
@@ -50,7 +51,7 @@ func InitAction() {
 			return
 		}
 	} else {
-		fmt.Printf("Current Directory already added to SyncEnv!\nUse 'SyncEnv --load' to load the variables\n")
+		fmt.Printf("Current Directory already added to SyncEnv!\nUse 'SyncEnv --unpack' to unpack the variables\n")
 		return
 	}
 
@@ -59,32 +60,10 @@ func InitAction() {
 // This action unpacks the variables and set them up for loading
 func unPackAction() {
 
-	cdir, _ := os.Getwd()
-
-	chash := hash(cdir)
-	floc := fmt.Sprintf("%s/%s.json", SYNCENV_DIR, chash)
-
 	var syncfile SyncEnvFile
 
-	_, err := os.Stat(floc)
+	floc, err := loadSyncEnvFile(&syncfile)
 	if err != nil {
-		if os.IsNotExist(err) {
-			fmt.Printf("Current Directory is not added to SyncEnv!\nUse 'SyncEnv --init' first to add the current directory\n")
-			return
-		}
-	}
-
-	fmt.Printf("Current Directory is in SyncEnv!\n")
-
-	data, err := os.ReadFile(floc)
-	if err != nil {
-		fmt.Println("Error in reading the file:", err)
-		return
-	}
-
-	err = json.Unmarshal(data, &syncfile)
-	if err != nil {
-		fmt.Println("Error in unpacking the file:", err)
 		return
 	}
 
@@ -96,11 +75,15 @@ func unPackAction() {
 	}
 	fmt.Printf("Unpacking the Variables...\n")
 
-	_unpack_envs(&syncfile, chash)
+	_chash := strings.Split(floc, ".")[0]
+
+	_unpack_envs(&syncfile, _chash)
+
+	fmt.Printf("Variables successfully unpacked\nRun 'eval `SyncEnv --load`' to load the variables\n")
 
 }
 
-// This actions loads the latest unpacked variables
+// This actions loads the latest unpacked variables and will be eval'ed from bash to export
 func loadAction() {
 
 	cdir, _ := os.Getwd()
@@ -114,12 +97,26 @@ func loadAction() {
 			fmt.Println("echo No file found to load. use 'SyncEnv --unpack' first")
 			return
 		} else {
-			fmt.Println("echo 'Some Unknown Error happened'")
+			fmt.Println("echo Some Unknown Error happened")
 			return
 		}
 	}
 
 	os.Remove(floc)
 	fmt.Println(string(data))
+}
+
+func addAction() {
+
+	var syncfile SyncEnvFile
+
+	floc, err := loadSyncEnvFile(&syncfile)
+	if err != nil {
+		return
+	}
+
+	fmt.Printf("Adding the new variables...\n")
+	_add_env(floc, &syncfile)
+	fmt.Printf("Addition Action Completed\n")
 
 }
