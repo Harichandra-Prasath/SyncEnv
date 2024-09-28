@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"strings"
 )
 
 func hash(text string) string {
@@ -23,7 +22,7 @@ func InitAction() {
 	// Create a json with hash of current directory
 
 	chash := hash(cdir)
-	floc := fmt.Sprintf("%s/%s.json", SYNCENV_DIR, chash)
+	floc := fmt.Sprintf("%s/packed/%s.json", SYNCENV_DIR, chash)
 
 	// Empty SyncEnv file
 	syncfile := SyncEnvFile{
@@ -62,7 +61,7 @@ func unPackAction() {
 
 	var syncfile SyncEnvFile
 
-	floc, err := loadSyncEnvFile(&syncfile)
+	_, _chash, err := loadSyncEnvFile(&syncfile)
 	if err != nil {
 		return
 	}
@@ -74,8 +73,6 @@ func unPackAction() {
 		return
 	}
 	fmt.Printf("Unpacking the Variables...\n")
-
-	_chash := strings.Split(floc, ".")[0]
 
 	_unpack_envs(&syncfile, _chash)
 
@@ -89,7 +86,7 @@ func loadAction() {
 	cdir, _ := os.Getwd()
 
 	chash := hash(cdir)
-	floc := fmt.Sprintf("/tmp/%s.txt", chash)
+	floc := fmt.Sprintf("%s/unpacked/%s.txt", SYNCENV_DIR, chash)
 
 	data, err := os.ReadFile(floc)
 	if err != nil {
@@ -102,7 +99,6 @@ func loadAction() {
 		}
 	}
 
-	os.Remove(floc)
 	fmt.Println(string(data))
 }
 
@@ -110,7 +106,7 @@ func addAction() {
 
 	var syncfile SyncEnvFile
 
-	floc, err := loadSyncEnvFile(&syncfile)
+	floc, _, err := loadSyncEnvFile(&syncfile)
 	if err != nil {
 		return
 	}
@@ -124,7 +120,7 @@ func addAction() {
 func updateAction() {
 	var syncfile SyncEnvFile
 
-	floc, err := loadSyncEnvFile(&syncfile)
+	floc, _, err := loadSyncEnvFile(&syncfile)
 	if err != nil {
 		return
 	}
@@ -138,7 +134,7 @@ func updateAction() {
 func peekAction() {
 	var syncfile SyncEnvFile
 
-	_, err := loadSyncEnvFile(&syncfile)
+	_, _, err := loadSyncEnvFile(&syncfile)
 	if err != nil {
 		return
 	}

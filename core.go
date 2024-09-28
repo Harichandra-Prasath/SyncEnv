@@ -26,7 +26,7 @@ func _unpack_envs(file *SyncEnvFile, hash string) {
 	}
 
 	// write it to the disk
-	floc := fmt.Sprintf("/tmp/%s.txt", hash)
+	floc := fmt.Sprintf("%s/unpacked/%s.txt", SYNCENV_DIR, hash)
 	os.WriteFile(floc, []byte(unpacked), 0702)
 
 }

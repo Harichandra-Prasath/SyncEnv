@@ -41,6 +41,14 @@ func init() {
 			if err != nil {
 				panic(err)
 			}
+			err = os.Mkdir(fmt.Sprintf("%s/packed", SYNCENV_DIR), 0702)
+			if err != nil {
+				panic(err)
+			}
+			err = os.Mkdir(fmt.Sprintf("%s/unpacked", SYNCENV_DIR), 0702)
+			if err != nil {
+				panic(err)
+			}
 		} else {
 			panic(err)
 		}
