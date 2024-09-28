@@ -80,6 +80,8 @@ func main() {
 		addAction()
 	} else if len(updateFlag) != 0 {
 		updateAction()
+	} else {
+		fmt.Printf("%s%s\n", MAIN_TEMPLATE, LOAD_TEMPLATE)
 	}
 
 	fmt.Println()
