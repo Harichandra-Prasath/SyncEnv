@@ -56,6 +56,7 @@ func InitAction() {
 
 }
 
+// This action unpacks the variables and set them up for loading
 func unPackAction() {
 
 	cdir, _ := os.Getwd()
@@ -96,5 +97,29 @@ func unPackAction() {
 	fmt.Printf("Unpacking the Variables...\n")
 
 	_unpack_envs(&syncfile, chash)
+
+}
+
+// This actions loads the latest unpacked variables
+func loadAction() {
+
+	cdir, _ := os.Getwd()
+
+	chash := hash(cdir)
+	floc := fmt.Sprintf("/tmp/%s.txt", chash)
+
+	data, err := os.ReadFile(floc)
+	if err != nil {
+		if os.IsNotExist(err) {
+			fmt.Println("echo No file found to load. use 'SyncEnv --unpack' first")
+			return
+		} else {
+			fmt.Println("echo 'Some Unknown Error happened'")
+			return
+		}
+	}
+
+	os.Remove(floc)
+	fmt.Println(string(data))
 
 }

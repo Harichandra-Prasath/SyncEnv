@@ -8,6 +8,7 @@ import (
 
 var initFlag bool
 var unpackFlag bool
+var loadFlag bool
 var SYNCENV_DIR string
 
 func init() {
@@ -32,6 +33,7 @@ func init() {
 	// Define the flags
 	flag.BoolVar(&initFlag, "init", false, "Flag used to add current directory to SyncEnv")
 	flag.BoolVar(&unpackFlag, "unpack", false, "Flag used to unpack the variables")
+	flag.BoolVar(&loadFlag, "load", false, "Flag used to load the variables")
 
 }
 
@@ -41,6 +43,8 @@ func main() {
 		InitAction()
 	} else if unpackFlag {
 		unPackAction()
+	} else if loadFlag {
+		loadAction()
 	}
 
 	fmt.Println()
