@@ -53,6 +53,13 @@ This is the action where SyncEnv loads the latest unpacked variables. As child p
 eval `SyncEnv --load`  
 ```
 
+**Loading from file**
+In this action, you can load the variables defined in the local file. As child process cannot write to 
+it's Parent, you need to run this action with bash eval.  
+```bash
+eval `SyncEnv --load-from-file <path>`
+```
+
 **Peek**
 You can see all the variables in the store   
 ```bash
@@ -62,8 +69,8 @@ SyncEnv --peek
 **Quick Notes**   
 1. Currently only one action is supported per run  
 2. You can skip unpacking if there are no changes made in the store and you just wants to load the previous state  
+3. You can write a bash function that calls the loading functions for convenience.
 
 ## Future-Work
-
-1. Loading from local .env   
-2. Multiple Actions per Run   
+  
+1. Multiple Actions per Run   

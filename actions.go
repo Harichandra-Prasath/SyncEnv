@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 )
 
 func hash(text string) string {
@@ -102,6 +103,7 @@ func loadAction() {
 	fmt.Println(string(data))
 }
 
+// Action to add new variables
 func addAction() {
 
 	var syncfile SyncEnvFile
@@ -117,6 +119,7 @@ func addAction() {
 
 }
 
+// Function to update the existing variables
 func updateAction() {
 	var syncfile SyncEnvFile
 
@@ -131,6 +134,7 @@ func updateAction() {
 
 }
 
+// Funciton to look at the variables stored
 func peekAction() {
 	var syncfile SyncEnvFile
 
@@ -143,5 +147,26 @@ func peekAction() {
 
 	for _, entry := range syncfile.Entries {
 		fmt.Printf("%s=%s\n", entry.Key, entry.Value)
+	}
+}
+
+// Function to load directly from local file
+func loadFromFileAction() {
+
+	data, err := os.ReadFile(loadFromFileFlag)
+	if err != nil {
+		if os.IsNotExist(err) {
+			fmt.Println("echo File not found")
+			return
+		} else {
+			fmt.Println("echo Some Unknown Error")
+			return
+		}
+	}
+
+	lines := strings.Split(string(data), "\n")
+
+	for _, line := range lines {
+		fmt.Printf("export %s\n", line)
 	}
 }

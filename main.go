@@ -25,6 +25,9 @@ var peekFlag bool
 
 var addFlag MultiFlag
 var updateFlag MultiFlag
+
+var loadFromFileFlag string
+
 var SYNCENV_DIR string
 
 func init() {
@@ -59,6 +62,9 @@ func init() {
 	flag.BoolVar(&unpackFlag, "unpack", false, "Flag used to unpack the variables")
 	flag.BoolVar(&loadFlag, "load", false, "Flag used to load the variables")
 	flag.BoolVar(&peekFlag, "peek", false, "Flag used to have a glance at stored variables")
+
+	flag.StringVar(&loadFromFileFlag, "load-from-file", "", "Flag used to load the variables from local file")
+
 	flag.Var(&addFlag, "add", "Flag used to add variables")
 	flag.Var(&updateFlag, "update", "Flag used to update variables")
 
@@ -76,12 +82,14 @@ func main() {
 		loadAction()
 	} else if peekFlag {
 		peekAction()
+	} else if loadFromFileFlag != "" {
+		loadFromFileAction()
 	} else if len(addFlag) != 0 {
 		addAction()
 	} else if len(updateFlag) != 0 {
 		updateAction()
 	} else {
-		fmt.Printf("%s%s\n", MAIN_TEMPLATE, LOAD_TEMPLATE)
+		fmt.Printf("%s%s%s\n", MAIN_TEMPLATE, LOAD_TEMPLATE, LOAD_FROM_FILE_TEMPLATE)
 	}
 
 	fmt.Println()

@@ -1,7 +1,6 @@
 package main
 
-const MAIN_TEMPLATE = `
-Welcome to SyncEnv!!!
+const MAIN_TEMPLATE = `Welcome to SyncEnv!!!
 Simple Env Variables Management tool
 
 Supported Actions
@@ -26,4 +25,6 @@ Unpacking: --unpack
 This action unpacks the stored variables to a loadable format
 Usage: SyncEnv --unpack
 `
-const LOAD_TEMPLATE = "\nLoading: --load\nThis action loads the unpacked varaibles to parent process.\nIt has to be run as bash eval\nUsage: eval `SyncEnv --load`"
+const LOAD_TEMPLATE = "\nLoading: --load\nThis action loads the unpacked varaibles to parent process.\nIt has to be run as bash eval\nUsage: eval `SyncEnv --load`\n"
+
+const LOAD_FROM_FILE_TEMPLATE = "\nLoad from File: --load-from-file\nThis action loads the variables defined in the local file.\nIt has to be run as bash eval\nUsage: eval`SyncEnv --load-from-file <path>`"
