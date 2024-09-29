@@ -1,12 +1,13 @@
 # SyncEnv
 
-Simple tool to Track and load the environment variables specified to directory   
+Simple Open Source tool to Track and load the environment variables specified to directory   
 
 ## Table of Contents
 
 1. [Installation](#installation)
 2. [Usage](#usage)
 3. [Future Work](#future-work)
+4. [Contributions](#contributions)
 
 ## Installation
 
@@ -53,14 +54,14 @@ This is the action where SyncEnv loads the latest unpacked variables. As child p
 eval `SyncEnv --load`  
 ```
 
-**Loading from file**
+**Loading from file**  
 In this action, you can load the variables defined in the local file. As child process cannot write to 
 it's Parent, you need to run this action with bash eval.  
 ```bash
 eval `SyncEnv --load-from-file <path>`
 ```
 
-**Peek**
+**Peek**   
 You can see all the variables in the store   
 ```bash
 SyncEnv --peek
@@ -74,3 +75,7 @@ SyncEnv --peek
 ## Future-Work
   
 1. Multiple Actions per Run   
+
+## Contributions  
+
+This is a small project open to everyone.Contributions and improvements are always welcome.  
