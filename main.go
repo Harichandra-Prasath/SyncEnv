@@ -20,8 +20,10 @@ func (i *MultiFlag) Set(value string) error {
 
 var initFlag bool
 var unpackFlag bool
-var loadFlag bool
 var peekFlag bool
+var hookFlag bool
+var nodebugFlag bool
+var loadFlag bool
 
 var addFlag MultiFlag
 var updateFlag MultiFlag
@@ -60,8 +62,10 @@ func init() {
 	// Define the flags
 	flag.BoolVar(&initFlag, "init", false, "Flag used to add current directory to SyncEnv")
 	flag.BoolVar(&unpackFlag, "unpack", false, "Flag used to unpack the variables")
-	flag.BoolVar(&loadFlag, "load", false, "Flag used to load the variables")
 	flag.BoolVar(&peekFlag, "peek", false, "Flag used to have a glance at stored variables")
+	flag.BoolVar(&hookFlag, "hook", false, "Flag used to hook the shell session for automatic loading")
+	flag.BoolVar(&loadFlag, "load", false, "Flag used to load the latest unpacked variables")
+	flag.BoolVar(&nodebugFlag, "no-debug", false, "Flag used to print the messages on loading. Should be used only as the subflag of load")
 
 	flag.StringVar(&loadFromFileFlag, "load-from-file", "", "Flag used to load the variables from local file")
 
@@ -79,7 +83,7 @@ func main() {
 	} else if unpackFlag {
 		unPackAction()
 	} else if loadFlag {
-		loadAction()
+		loadAction(nodebugFlag)
 	} else if peekFlag {
 		peekAction()
 	} else if loadFromFileFlag != "" {
@@ -88,6 +92,8 @@ func main() {
 		addAction()
 	} else if len(updateFlag) != 0 {
 		updateAction()
+	} else if hookFlag {
+		hookAction()
 	} else {
 		fmt.Printf("%s%s%s\n", MAIN_TEMPLATE, LOAD_TEMPLATE, LOAD_FROM_FILE_TEMPLATE)
 	}

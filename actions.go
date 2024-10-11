@@ -82,7 +82,9 @@ func unPackAction() {
 }
 
 // This actions loads the latest unpacked variables and will be eval'ed from bash to export
-func loadAction() {
+func loadAction(by_hook bool) {
+
+	var msg string
 
 	cdir, _ := os.Getwd()
 
@@ -92,12 +94,16 @@ func loadAction() {
 	data, err := os.ReadFile(floc)
 	if err != nil {
 		if os.IsNotExist(err) {
-			fmt.Println("echo No file found to load. use 'SyncEnv --unpack' first")
-			return
+			msg = "echo No file found to load. use 'SyncEnv --unpack' first"
 		} else {
-			fmt.Println("echo Some Unknown Error happened")
-			return
+			msg = "echo Some Unknown Error happened"
 		}
+	}
+
+	// Pop out the messages on manual calling
+	if !by_hook && msg != "" {
+		fmt.Println(msg)
+		return
 	}
 
 	fmt.Println(string(data))
@@ -169,4 +175,11 @@ func loadFromFileAction() {
 	for _, line := range lines {
 		fmt.Printf("export %s\n", line)
 	}
+}
+
+// Function to override hook the SyncEnv to current Session
+func hookAction() {
+
+	// Gets the hook template and pass it to eval
+	fmt.Print(SYNCENV_HOOK)
 }
