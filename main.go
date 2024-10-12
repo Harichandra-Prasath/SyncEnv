@@ -37,6 +37,7 @@ var (
 	nodebugFlag bool
 
 	hookFlagSet *flag.FlagSet
+	shellFlag   string
 )
 
 func init() {
@@ -83,6 +84,7 @@ func init() {
 	loadFlagSet.BoolVar(&nodebugFlag, "no-debug", false, "Flag used to output messages on load action")
 	loadFlagSet.StringVar(&loadFromFileFlag, "from-file", "", "Flag used to load variables from local .env file")
 
+	hookFlagSet.StringVar(&shellFlag, "shell", "", "User's shell for the hook")
 }
 
 func main() {

@@ -36,16 +36,22 @@ Additionally --no-debug flag can be paused to prevent message outputs on load ac
 Usage: SyncEnv load, SyncEnv load --from-file <path>, SyncEnv load --no-debug
 `
 
-const SYNCENV_HOOK = `syncenv_hook() {
-  local pdir="$PWD"
-  builtin cd "$@" || return
-  if [[ "$pdir" != "$PWD" ]]
-  then
-      eval "$(SyncEnv load --no-debug)"
-  fi
-}
+// Check syncenv_hook, if not found, add it to the PROMPT_COMMAND
+const BASH_HOOK = `
+syncenv_hook(){
+local prev_exit=$?;
+eval "$(SyncEnv load --no-debug)";
+return $prev_exit;
+};
+if [[ ";${PROMPT_COMMAND[*]:-};" != *";syncenv_hook;"* ]]; then
+  PROMPT_COMMAND="syncenv_hook${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
+fi
+`
 
-cd() {
-  syncenv_hook "$@"
+// append the syncenv_hook to zsh chpwd_functions
+const ZSH_HOOK = `
+syncenv_hook(){
+eval "$(SyncEnv load --no-debug)"
 }
+chpwd_functions=("syncenv_hook" "${chpwd_functions[@]}")
 `

@@ -81,14 +81,20 @@ SyncEnv --help
 
 For auto-loading of variables when entering the directory, you can create a hook in your shell profile.  
 
-Add the following either in your .bashrc or .zshrc  
+Currently SyncEnv supports zsh and bash.     
+
+For Zsh, add the below in your .zshrc  
 ```bash
-eval `SyncEnv hook`
+eval "$(SyncEnv hook --shell zsh)"
 ```
 
+For Bash, add the below in your .bashrc  
+```bash
+eval "$(SyncEnv hook --shell bash)"
+```
+  
 **Notes**  
-1. This will only load the latest unpacked variables from SyncEnv.  
-2. Currently this overrides your cd, So use this if you know enough about shell functions.   
+1. This will only load the latest unpacked variables from SyncEnv.   
 
 ## Future-Work
   

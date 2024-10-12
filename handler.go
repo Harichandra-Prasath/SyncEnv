@@ -4,13 +4,7 @@ import "fmt"
 
 // Handler for loadFlagSet
 func handleLoad() {
-
-	if nodebugFlag {
-		loadAction(nodebugFlag)
-	} else if loadFromFileFlag != "" {
-		loadFromFileAction()
-	}
-
+	loadAction(nodebugFlag, loadFromFileFlag)
 }
 
 // Handler for hookFlagSet

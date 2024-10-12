@@ -82,31 +82,46 @@ func unPackAction() {
 }
 
 // This actions loads the latest unpacked variables and will be eval'ed from bash to export
-func loadAction(by_hook bool) {
+func loadAction(by_hook bool, file_path string) {
 
 	var msg string
+	var output string
 
-	cdir, _ := os.Getwd()
-
-	chash := hash(cdir)
-	floc := fmt.Sprintf("%s/unpacked/%s.txt", SYNCENV_DIR, chash)
-
-	data, err := os.ReadFile(floc)
-	if err != nil {
-		if os.IsNotExist(err) {
-			msg = "echo No file found to load. use 'SyncEnv --unpack' first"
-		} else {
-			msg = "echo Some Unknown Error happened"
+	// If local file is passed
+	if file_path != "" {
+		data, err := _load_from_file(file_path)
+		if err != nil {
+			if os.IsNotExist(err) {
+				msg = "echo File not found."
+			} else {
+				msg = "echo Some Unknown Error happened"
+			}
 		}
+		output = data
+	} else {
+		cdir, _ := os.Getwd()
+
+		chash := hash(cdir)
+		floc := fmt.Sprintf("%s/unpacked/%s.txt", SYNCENV_DIR, chash)
+
+		data, err := os.ReadFile(floc)
+		if err != nil {
+			if os.IsNotExist(err) {
+				msg = "echo No file found to load. use 'SyncEnv --unpack' first"
+			} else {
+				msg = "echo Some Unknown Error happened"
+			}
+		}
+		output = string(data)
 	}
 
-	// Pop out the messages on manual calling
+	// Pop out the messages
 	if !by_hook && msg != "" {
 		fmt.Println(msg)
 		return
 	}
 
-	fmt.Println(string(data))
+	fmt.Print(output)
 }
 
 // Action to add new variables
@@ -156,30 +171,36 @@ func peekAction() {
 	}
 }
 
-// Function to load directly from local file
-func loadFromFileAction() {
+func _load_from_file(path string) (string, error) {
 
-	data, err := os.ReadFile(loadFromFileFlag)
+	output := ""
+
+	data, err := os.ReadFile(path)
 	if err != nil {
-		if os.IsNotExist(err) {
-			fmt.Println("echo File not found")
-			return
-		} else {
-			fmt.Println("echo Some Unknown Error")
-			return
-		}
+		return "", err
 	}
 
 	lines := strings.Split(string(data), "\n")
 
 	for _, line := range lines {
-		fmt.Printf("export %s\n", line)
+		output += fmt.Sprintf("export %s\n", line)
 	}
+
+	return output, nil
 }
 
 // Function to override hook the SyncEnv to current Session
 func hookAction() {
 
-	// Gets the hook template and pass it to eval
-	fmt.Print(SYNCENV_HOOK)
+	switch shellFlag {
+	case "bash":
+		fmt.Print(BASH_HOOK)
+	case "zsh":
+		fmt.Print(ZSH_HOOK)
+	case "":
+		fmt.Println("echo No shell provided")
+	default:
+		fmt.Println("echo Shell not recognised. SyncEnv supports bash and zsh")
+	}
+
 }
