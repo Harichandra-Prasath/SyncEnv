@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-// custom multi flag
+// Custom MultiFlags for add,update,etc..
 type MultiFlag []string
 
 func (i *MultiFlag) String() string {
@@ -18,23 +18,28 @@ func (i *MultiFlag) Set(value string) error {
 	return nil
 }
 
-var initFlag bool
-var unpackFlag bool
-var peekFlag bool
-var hookFlag bool
-var nodebugFlag bool
-var loadFlag bool
+var (
+	// core dir for the SyncEnv
+	SYNCENV_DIR string
 
-var addFlag MultiFlag
-var updateFlag MultiFlag
+	// Top Level Flags
+	initFlag         bool
+	unpackFlag       bool
+	peekFlag         bool
+	helpFlag         bool
+	loadFromFileFlag string
+	addFlag          MultiFlag
+	updateFlag       MultiFlag
 
-var loadFromFileFlag string
+	// FlagSets
 
-var SYNCENV_DIR string
+	loadFlagSet *flag.FlagSet
+	nodebugFlag bool
+
+	hookFlagSet *flag.FlagSet
+)
 
 func init() {
-
-	fmt.Println()
 
 	// Check for the Directory , else create it
 	SYNCENV_DIR = fmt.Sprintf("%s/.SyncEnv", os.Getenv("HOME"))
@@ -46,10 +51,14 @@ func init() {
 			if err != nil {
 				panic(err)
 			}
+
+			// Packed dir to store the variables
 			err = os.Mkdir(fmt.Sprintf("%s/packed", SYNCENV_DIR), 0702)
 			if err != nil {
 				panic(err)
 			}
+
+			// Unpacked dir to store the unpacked export ready variables
 			err = os.Mkdir(fmt.Sprintf("%s/unpacked", SYNCENV_DIR), 0702)
 			if err != nil {
 				panic(err)
@@ -59,44 +68,39 @@ func init() {
 		}
 	}
 
-	// Define the flags
+	// Define the top level flags
 	flag.BoolVar(&initFlag, "init", false, "Flag used to add current directory to SyncEnv")
 	flag.BoolVar(&unpackFlag, "unpack", false, "Flag used to unpack the variables")
 	flag.BoolVar(&peekFlag, "peek", false, "Flag used to have a glance at stored variables")
-	flag.BoolVar(&hookFlag, "hook", false, "Flag used to hook the shell session for automatic loading")
-	flag.BoolVar(&loadFlag, "load", false, "Flag used to load the latest unpacked variables")
-	flag.BoolVar(&nodebugFlag, "no-debug", false, "Flag used to print the messages on loading. Should be used only as the subflag of load")
-
-	flag.StringVar(&loadFromFileFlag, "load-from-file", "", "Flag used to load the variables from local file")
-
+	flag.BoolVar(&helpFlag, "help", false, "Flag used to show the help menu")
 	flag.Var(&addFlag, "add", "Flag used to add variables")
 	flag.Var(&updateFlag, "update", "Flag used to update variables")
+
+	// Define the FlagSets
+	loadFlagSet = flag.NewFlagSet("load", flag.ContinueOnError)
+	hookFlagSet = flag.NewFlagSet("hook", flag.ContinueOnError)
+
+	loadFlagSet.BoolVar(&nodebugFlag, "no-debug", false, "Flag used to output messages on load action")
+	loadFlagSet.StringVar(&loadFromFileFlag, "from-file", "", "Flag used to load variables from local .env file")
 
 }
 
 func main() {
-	flag.Parse()
 
-	// Only one action allowed per run
-	if initFlag {
-		InitAction()
-	} else if unpackFlag {
-		unPackAction()
-	} else if loadFlag {
-		loadAction(nodebugFlag)
-	} else if peekFlag {
-		peekAction()
-	} else if loadFromFileFlag != "" {
-		loadFromFileAction()
-	} else if len(addFlag) != 0 {
-		addAction()
-	} else if len(updateFlag) != 0 {
-		updateAction()
-	} else if hookFlag {
-		hookAction()
-	} else {
-		fmt.Printf("%s%s%s\n", MAIN_TEMPLATE, LOAD_TEMPLATE, LOAD_FROM_FILE_TEMPLATE)
+	if len(os.Args) < 2 {
+		panic("No args or flags passed")
 	}
 
-	fmt.Println()
+	switch os.Args[1] {
+	case "load":
+		loadFlagSet.Parse(os.Args[2:])
+		handleLoad()
+	case "hook":
+		hookFlagSet.Parse(os.Args[2:])
+		handleHook()
+	default:
+		flag.Parse()
+		handleTop()
+	}
+
 }
