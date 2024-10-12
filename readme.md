@@ -98,7 +98,9 @@ eval "$(SyncEnv hook --shell bash)"
 
 ## Future-Work
   
-1. Re-writing auto loading by shell specific hooks  
+1. Port to Windows  
+2. Additional Shells like fish,etc..  
+3. Reducing Write actions if possible  
 
 ## Contributions  
 
