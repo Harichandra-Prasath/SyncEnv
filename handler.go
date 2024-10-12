@@ -29,7 +29,7 @@ func handleTop() {
 	} else if peekFlag {
 		peekAction()
 	} else if helpFlag {
-		fmt.Printf("%s%s%s\n", MAIN_TEMPLATE, LOAD_TEMPLATE, LOAD_FROM_FILE_TEMPLATE)
+		fmt.Printf("%s%s\n", MAIN_TEMPLATE, LOAD_TEMPLATE)
 	} else if len(addFlag) != 0 {
 		addAction()
 	} else if len(updateFlag) != 0 {

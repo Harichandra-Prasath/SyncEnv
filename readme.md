@@ -6,8 +6,9 @@ Simple Open Source tool to Track and load the environment variables specified to
 
 1. [Installation](#installation)
 2. [Usage](#usage)
-3. [Future Work](#future-work)
-4. [Contributions](#contributions)
+3. [Hooking](#hooking)
+4. [Future Work](#future-work)
+5. [Contributions](#contributions)
 
 ## Installation
 
@@ -15,12 +16,6 @@ Simple Open Source tool to Track and load the environment variables specified to
 
 ```bash
 go install github.com/Harichandra-Prasath/SyncEnv
-```
-
-2. Run the binary  
-
-```bash 
-SyncEnv
 ```
 
 ## Usage
@@ -51,30 +46,53 @@ SyncEnv --unpack
 **Loading**  
 This is the action where SyncEnv loads the latest unpacked variables. As child process cannot write to it's Parent, you need to run this action with bash eval.   
 ```bash
-eval `SyncEnv --load`  
-```
+eval `SyncEnv load`  
+```   
+   
+If you want to load from a local file, add --from-file flag.   
 
-**Loading from file**  
-In this action, you can load the variables defined in the local file. As child process cannot write to 
-it's Parent, you need to run this action with bash eval.  
 ```bash
-eval `SyncEnv --load-from-file <path>`
+eval `SyncEnv load --from-file <path-to-file>`
 ```
+   
+Additionally, --no-debug flag can be passed to prevent message outputs.  
 
+```bash
+eval `SyncEnv load --no-debug`
+```
+  
 **Peek**   
 You can see all the variables in the store   
 ```bash
 SyncEnv --peek
 ```
+  
+**Help**  
+To see the help menu  
+```bash
+SyncEnv --help
+```
+
 
 **Quick Notes**   
-1. Currently only one action is supported per run  
-2. You can skip unpacking if there are no changes made in the store and you just wants to load the previous state  
-3. You can write a bash function that calls the loading functions for convenience.
+1. You can skip unpacking if there are no changes made in the store and you just wants to load the previous state  
+
+## Hooking
+
+For auto-loading of variables when entering the directory, you can create a hook in your shell profile.  
+
+Add the following either in your .bashrc or .zshrc  
+```bash
+eval `SyncEnv hook`
+```
+
+**Notes**  
+1. This will only load the latest unpacked variables from SyncEnv.  
+2. Currently this overrides your cd, So use this if you know enough about shell functions.   
 
 ## Future-Work
   
-1. Multiple Actions per Run   
+1. Re-writing auto loading by shell specific hooks  
 
 ## Contributions  
 
