@@ -22,10 +22,6 @@ Peek: --peek
 This action lets you have a glance at the stored variables
 Usage: SyncEnv --peek
 
-Unpacking: --unpack
-This action unpacks the stored variables to a loadable format
-Usage: SyncEnv --unpack
-
 Porting: --port
 This actions ports the SyncEnv variables to requested file
 Usage: SyncEnv --port <path>, SyncEnv --port
@@ -33,7 +29,7 @@ Usage: SyncEnv --port <path>, SyncEnv --port
 `
 
 const LOAD_TEMPLATE = `Loading: load
-This action loads the latest unpacked variables to the current shell session
+This action loads the latest variables to the current shell session
 This has to be ran as shell's eval.
 If you want to load from local .env file, add --from-file
 Additionally --no-debug flag can be paused to prevent message outputs on load action

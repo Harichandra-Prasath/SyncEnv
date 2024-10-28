@@ -37,14 +37,8 @@ You can update existing variables
 SyncEnv --update foo=gaz --update baz=bar
 ```
 
-**Unpacking**  
-In this action, SyncEnv reads the stored variables and unpacks them to a loadable file  
-```bash
-SyncEnv --unpack
-```
-
 **Loading**  
-This is the action where SyncEnv loads the latest unpacked variables. As child process cannot write to it's Parent, you need to run this action with bash eval.   
+This is the action where SyncEnv loads the attached variables. As child process cannot write to it's Parent, you need to run this action with bash eval.   
 ```bash
 eval `SyncEnv load`  
 ```   
@@ -79,10 +73,7 @@ To see the help menu
 ```bash
 SyncEnv --help
 ```
-
-
-**Quick Notes**   
-1. You can skip unpacking if there are no changes made in the store and you just wants to load the previous state  
+  
 
 ## Hooking
 
@@ -99,10 +90,8 @@ For Bash, add the below in your .bashrc
 ```bash
 eval "$(SyncEnv hook --shell bash)"
 ```
+     
   
-**Notes**  
-1. This will only load the latest unpacked variables from SyncEnv.   
-
 ## Future-Work
   
 1. Port to Windows  

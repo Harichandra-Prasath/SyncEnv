@@ -43,13 +43,13 @@ func InitAction() {
 			return
 		}
 	} else {
-		fmt.Printf("Current Directory already added to SyncEnv!\nUse 'SyncEnv --unpack' to unpack the variables\n")
+		fmt.Printf("Current Directory already added to SyncEnv!\nUse 'SyncEnv load' to load the variables\n")
 		return
 	}
 
 }
 
-// This actions loads the latest unpacked variables and will be eval'ed from bash to export
+// This actions loads the variables and should be eval'ed from shell
 func loadAction(by_hook bool, file_path string) {
 
 	var msg string
@@ -75,10 +75,11 @@ func loadAction(by_hook bool, file_path string) {
 		data, err := os.ReadFile(floc)
 		if err != nil {
 			if os.IsNotExist(err) {
-				msg = "echo No file found to load. use 'SyncEnv --add'  first"
+				msg = "echo No file found to load. use 'SyncEnv --init' first."
 			} else {
-				msg = "echo Some Unknown Error happened"
+				msg = "echo Some Unknown Error happened."
 			}
+
 		}
 
 		output = string(data)
