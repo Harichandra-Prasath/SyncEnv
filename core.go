@@ -62,7 +62,9 @@ func _add_env(floc string, file *SyncEnvFile) {
 func _update_env(floc string, file *SyncEnvFile) {
 
 	for _, item := range updateFlag {
-		_entry := strings.Split(item, "=")
+
+		// Split with first "=" character
+		_entry := strings.SplitN(item, "=", 2)
 
 		if len(_entry) != 2 {
 			fmt.Println("Improper key-value Pair...")

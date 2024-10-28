@@ -66,7 +66,14 @@ You can see all the variables in the store
 ```bash
 SyncEnv --peek
 ```
-  
+
+**Port**   
+You can Port your SyncEnv variables to a standalone file.  
+```bash
+SyncEnv --port <path-to-file>
+```
+
+
 **Help**  
 To see the help menu  
 ```bash

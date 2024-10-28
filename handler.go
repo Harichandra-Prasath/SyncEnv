@@ -28,5 +28,7 @@ func handleTop() {
 		addAction()
 	} else if len(updateFlag) != 0 {
 		updateAction()
+	} else if portFlag != "" {
+		portAction()
 	}
 }

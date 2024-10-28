@@ -28,6 +28,7 @@ var (
 	peekFlag         bool
 	helpFlag         bool
 	loadFromFileFlag string
+	portFlag         string
 	addFlag          MultiFlag
 	updateFlag       MultiFlag
 
@@ -76,6 +77,7 @@ func init() {
 	flag.BoolVar(&helpFlag, "help", false, "Flag used to show the help menu")
 	flag.Var(&addFlag, "add", "Flag used to add variables")
 	flag.Var(&updateFlag, "update", "Flag used to update variables")
+	flag.StringVar(&portFlag, "port", "", "Flag used to port SyncEnv variables to file")
 
 	// Define the FlagSets
 	loadFlagSet = flag.NewFlagSet("load", flag.ContinueOnError)

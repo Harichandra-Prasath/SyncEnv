@@ -26,6 +26,10 @@ Unpacking: --unpack
 This action unpacks the stored variables to a loadable format
 Usage: SyncEnv --unpack
 
+Porting: --port
+This actions ports the SyncEnv variables to requested file
+Usage: SyncEnv --port <path>, SyncEnv --port
+
 `
 
 const LOAD_TEMPLATE = `Loading: load

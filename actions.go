@@ -77,7 +77,7 @@ func unPackAction() {
 
 	_unpack_envs(&syncfile, _chash)
 
-	fmt.Printf("Variables successfully unpacked\nRun 'eval `SyncEnv --load`' to load the variables\n")
+	fmt.Printf("Variables successfully unpacked\nRun 'eval `SyncEnv load`' to load the variables\n")
 
 }
 
@@ -187,6 +187,29 @@ func _load_from_file(path string) (string, error) {
 	}
 
 	return output, nil
+}
+
+// Action that ports the SycnEnv variables to file
+func portAction() {
+
+	file, err := os.Create(portFlag)
+	if err != nil {
+		fmt.Printf("Error in Creating the file: %s\n", err)
+	}
+
+	var syncfile SyncEnvFile
+
+	_, _, err = loadSyncEnvFile(&syncfile)
+	if err != nil {
+		return
+	}
+
+	for _, entry := range syncfile.Entries {
+		file.WriteString(fmt.Sprintf("%s=%s\n", entry.Key, entry.Value))
+	}
+
+	fmt.Println("Ported Successfully")
+
 }
 
 // Function to override hook the SyncEnv to current Session
