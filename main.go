@@ -24,7 +24,6 @@ var (
 
 	// Top Level Flags
 	initFlag         bool
-	unpackFlag       bool
 	peekFlag         bool
 	helpFlag         bool
 	loadFromFileFlag string
@@ -53,18 +52,6 @@ func init() {
 			if err != nil {
 				panic(err)
 			}
-
-			// Packed dir to store the variables
-			err = os.Mkdir(fmt.Sprintf("%s/packed", SYNCENV_DIR), 0702)
-			if err != nil {
-				panic(err)
-			}
-
-			// Unpacked dir to store the unpacked export ready variables
-			err = os.Mkdir(fmt.Sprintf("%s/unpacked", SYNCENV_DIR), 0702)
-			if err != nil {
-				panic(err)
-			}
 		} else {
 			panic(err)
 		}
@@ -72,7 +59,6 @@ func init() {
 
 	// Define the top level flags
 	flag.BoolVar(&initFlag, "init", false, "Flag used to add current directory to SyncEnv")
-	flag.BoolVar(&unpackFlag, "unpack", false, "Flag used to unpack the variables")
 	flag.BoolVar(&peekFlag, "peek", false, "Flag used to have a glance at stored variables")
 	flag.BoolVar(&helpFlag, "help", false, "Flag used to show the help menu")
 	flag.Var(&addFlag, "add", "Flag used to add variables")

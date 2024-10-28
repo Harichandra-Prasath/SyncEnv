@@ -1,41 +1,26 @@
 package main
 
 import (
-	"encoding/json"
+	"bytes"
 	"fmt"
 	"os"
 	"strings"
 )
 
 type SyncEnvFile struct {
-	Entries []*SyncEnvEntry `json:"entries"`
+	Entries []*SyncEnvEntry
 }
 
 type SyncEnvEntry struct {
-	Key   string `json:"key"`
-	Value string `json:"value"`
-}
-
-// Iterate thorugh the entries and load it
-func _unpack_envs(file *SyncEnvFile, hash string) {
-
-	var unpacked string
-
-	for _, entry := range file.Entries {
-		unpacked += fmt.Sprintf("export %s='%s'\n", entry.Key, entry.Value)
-	}
-
-	// write it to the disk
-	floc := fmt.Sprintf("%s/unpacked/%s.txt", SYNCENV_DIR, hash)
-	os.WriteFile(floc, []byte(unpacked), 0702)
-
+	Key   string
+	Value string
 }
 
 // Append the new entry to the SyncEnv file and write it
 func _add_env(floc string, file *SyncEnvFile) {
 
 	for _, item := range addFlag {
-		_entry := strings.Split(item, "=")
+		_entry := strings.SplitN(item, "=", 2)
 
 		if len(_entry) != 2 {
 			fmt.Println("Improper key-value Pair...")
@@ -51,10 +36,7 @@ func _add_env(floc string, file *SyncEnvFile) {
 		file.Entries = append(file.Entries, &entry)
 	}
 
-	// marshall it
-	data, _ := json.Marshal(file)
-
-	os.WriteFile(floc, data, 0702)
+	_write_to_sy(floc, file)
 
 }
 
@@ -78,10 +60,7 @@ func _update_env(floc string, file *SyncEnvFile) {
 
 	}
 
-	// marshall it
-	data, _ := json.Marshal(file)
-
-	os.WriteFile(floc, data, 0702)
+	_write_to_sy(floc, file)
 
 }
 
@@ -95,4 +74,17 @@ func _look_up_and_set(file *SyncEnvFile, key string, new_value string) {
 	}
 
 	fmt.Printf("Specified variable '%s' was not found\n", key)
+}
+
+func _write_to_sy(floc string, sycnfile *SyncEnvFile) {
+
+	buffer := &bytes.Buffer{}
+
+	for _, entry := range sycnfile.Entries {
+		_entry := fmt.Sprintf("export %s=%s\n", entry.Key, entry.Value)
+		buffer.WriteString(_entry)
+	}
+
+	os.WriteFile(floc, buffer.Bytes(), 0702)
+
 }

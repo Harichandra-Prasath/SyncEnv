@@ -18,8 +18,6 @@ func handleTop() {
 	// Only one action allowed per run
 	if initFlag {
 		InitAction()
-	} else if unpackFlag {
-		unPackAction()
 	} else if peekFlag {
 		peekAction()
 	} else if helpFlag {

@@ -3,7 +3,6 @@ package main
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
@@ -20,27 +19,20 @@ func InitAction() {
 
 	cdir, _ := os.Getwd()
 
-	// Create a json with hash of current directory
+	// Create a SyncEnv file with hash of current directory
 
 	chash := hash(cdir)
-	floc := fmt.Sprintf("%s/packed/%s.json", SYNCENV_DIR, chash)
-
-	// Empty SyncEnv file
-	syncfile := SyncEnvFile{
-		Entries: make([]*SyncEnvEntry, 0),
-	}
+	floc := fmt.Sprintf("%s/%s.sy", SYNCENV_DIR, chash)
 
 	_, err := os.Stat(floc)
 	if err != nil {
 		if os.IsNotExist(err) {
 			fmt.Printf("Adding Current Directory to SyncEnv...\n")
 
-			data, _ := json.Marshal(syncfile)
-
 			// create an empty file
-			err = os.WriteFile(floc, data, 0702)
+			err = os.WriteFile(floc, []byte{}, 0702)
 			if err != nil {
-				fmt.Println("Error in Creating the JSON:", err)
+				fmt.Println("Error in Creating the File:", err)
 				return
 			}
 
@@ -54,30 +46,6 @@ func InitAction() {
 		fmt.Printf("Current Directory already added to SyncEnv!\nUse 'SyncEnv --unpack' to unpack the variables\n")
 		return
 	}
-
-}
-
-// This action unpacks the variables and set them up for loading
-func unPackAction() {
-
-	var syncfile SyncEnvFile
-
-	_, _chash, err := loadSyncEnvFile(&syncfile)
-	if err != nil {
-		return
-	}
-
-	l := len(syncfile.Entries)
-
-	fmt.Printf("Found %d entries\n", l)
-	if l == 0 {
-		return
-	}
-	fmt.Printf("Unpacking the Variables...\n")
-
-	_unpack_envs(&syncfile, _chash)
-
-	fmt.Printf("Variables successfully unpacked\nRun 'eval `SyncEnv load`' to load the variables\n")
 
 }
 
@@ -102,16 +70,17 @@ func loadAction(by_hook bool, file_path string) {
 		cdir, _ := os.Getwd()
 
 		chash := hash(cdir)
-		floc := fmt.Sprintf("%s/unpacked/%s.txt", SYNCENV_DIR, chash)
+		floc := fmt.Sprintf("%s/%s.sy", SYNCENV_DIR, chash)
 
 		data, err := os.ReadFile(floc)
 		if err != nil {
 			if os.IsNotExist(err) {
-				msg = "echo No file found to load. use 'SyncEnv --unpack' first"
+				msg = "echo No file found to load. use 'SyncEnv --add'  first"
 			} else {
 				msg = "echo Some Unknown Error happened"
 			}
 		}
+
 		output = string(data)
 	}
 
