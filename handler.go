@@ -12,13 +12,15 @@ func handleHook() {
 	hookAction()
 }
 
+func handleInit() {
+	InitAction(migrateFlag)
+}
+
 // Handler for Top Level Flags
 func handleTop() {
 
 	// Only one action allowed per run
-	if initFlag {
-		InitAction()
-	} else if peekFlag {
+	if peekFlag {
 		peekAction()
 	} else if helpFlag {
 		fmt.Printf("%s%s\n", MAIN_TEMPLATE, LOAD_TEMPLATE)

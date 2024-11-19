@@ -22,8 +22,6 @@ var (
 	// core dir for the SyncEnv
 	SYNCENV_DIR string
 
-	// Top Level Flags
-	initFlag         bool
 	peekFlag         bool
 	helpFlag         bool
 	loadFromFileFlag string
@@ -32,12 +30,14 @@ var (
 	updateFlag       MultiFlag
 
 	// FlagSets
-
 	loadFlagSet *flag.FlagSet
 	nodebugFlag bool
 
 	hookFlagSet *flag.FlagSet
 	shellFlag   string
+
+	initFlagSet *flag.FlagSet
+	migrateFlag string
 )
 
 func init() {
@@ -58,21 +58,25 @@ func init() {
 	}
 
 	// Define the top level flags
-	flag.BoolVar(&initFlag, "init", false, "Flag used to add current directory to SyncEnv")
 	flag.BoolVar(&peekFlag, "peek", false, "Flag used to have a glance at stored variables")
 	flag.BoolVar(&helpFlag, "help", false, "Flag used to show the help menu")
+	flag.StringVar(&migrateFlag, "with-file", "", "Flag used to add the local file on init")
 	flag.Var(&addFlag, "add", "Flag used to add variables")
 	flag.Var(&updateFlag, "update", "Flag used to update variables")
 	flag.StringVar(&portFlag, "port", "", "Flag used to port SyncEnv variables to file")
 
 	// Define the FlagSets
-	loadFlagSet = flag.NewFlagSet("load", flag.ContinueOnError)
-	hookFlagSet = flag.NewFlagSet("hook", flag.ContinueOnError)
+	loadFlagSet = flag.NewFlagSet("load", flag.ExitOnError)
+	hookFlagSet = flag.NewFlagSet("hook", flag.ExitOnError)
+	initFlagSet = flag.NewFlagSet("init", flag.ExitOnError)
 
 	loadFlagSet.BoolVar(&nodebugFlag, "no-debug", false, "Flag used to output messages on load action")
 	loadFlagSet.StringVar(&loadFromFileFlag, "from-file", "", "Flag used to load variables from local .env file")
 
 	hookFlagSet.StringVar(&shellFlag, "shell", "", "User's shell for the hook")
+
+	initFlagSet.StringVar(&migrateFlag, "with-file", "", "Flag to add the local variables on init")
+
 }
 
 func main() {
@@ -82,6 +86,9 @@ func main() {
 	}
 
 	switch os.Args[1] {
+	case "init":
+		initFlagSet.Parse(os.Args[2:])
+		handleInit()
 	case "load":
 		loadFlagSet.Parse(os.Args[2:])
 		handleLoad()

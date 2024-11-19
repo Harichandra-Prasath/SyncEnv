@@ -15,7 +15,7 @@ func hash(text string) string {
 }
 
 // This Action adds the Current directory to SyncEnv
-func InitAction() {
+func InitAction(file string) {
 
 	cdir, _ := os.Getwd()
 
@@ -29,14 +29,24 @@ func InitAction() {
 		if os.IsNotExist(err) {
 			fmt.Printf("Adding Current Directory to SyncEnv...\n")
 
-			// create an empty file
-			err = os.WriteFile(floc, []byte{}, 0702)
-			if err != nil {
-				fmt.Println("Error in Creating the File:", err)
-				return
-			}
+			if file != "" {
+				data, err := os.ReadFile(file)
+				if err != nil {
+					fmt.Println("Error in Migrating:", err)
+					return
+				}
 
+				os.WriteFile(floc, data, 0702)
+			} else {
+				// create an empty file
+				err = os.WriteFile(floc, []byte{}, 0702)
+				if err != nil {
+					fmt.Println("Error in Creating the File:", err)
+					return
+				}
+			}
 			fmt.Printf("Current Directory Added Successfully\n")
+
 			return
 		} else {
 			fmt.Println("UnKnown Error in Init Action:", err)
@@ -195,5 +205,10 @@ func hookAction() {
 	default:
 		fmt.Println("echo Shell not recognised. SyncEnv supports bash and zsh")
 	}
+
+}
+
+// function to load the .env varibles present
+func migrateLocal() {
 
 }
