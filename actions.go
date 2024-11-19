@@ -207,8 +207,3 @@ func hookAction() {
 	}
 
 }
-
-// function to load the .env varibles present
-func migrateLocal() {
-
-}

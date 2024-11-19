@@ -21,9 +21,14 @@ go install github.com/Harichandra-Prasath/SyncEnv
 ## Usage
 
 **Initialise**  
-Start by running the below to add the current directory to SyncEnv     
+This action adds the current directory to SycnEnv store.   
 ```bash
-SyncEnv --init
+SyncEnv init
+```
+
+Additionally if you want to migrate local variabales that you have already, use --with-file.   
+```bash
+SyncEnv init --with-file <path-to-file>
 ```
   
 **Additon**   

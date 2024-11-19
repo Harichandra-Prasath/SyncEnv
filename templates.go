@@ -6,9 +6,10 @@ Simple Env Variables Management tool
 
 Supported Actions
 
-Intialise: --init 
-This action adds the current directory to SycnEnv store
-Usage: SyncEnv --init
+Intialise: init 
+This action adds the current directory to SycnEnv store.  
+Additionally if you want to migrate local variabales that you have already, use --with-file.
+Usage: SyncEnv init, SyncEnv init --with-file <path to local file>  
 
 Addtion: --add 
 This action adds a new variable to the SyncEnv
