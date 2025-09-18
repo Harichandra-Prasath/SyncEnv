@@ -36,7 +36,14 @@ func InitAction(file string) {
 					return
 				}
 
-				os.WriteFile(floc, data, 0702)
+				var exportedData string
+				for _, data := range strings.Split(string(data), "\n") {
+					if strings.Contains(data, "=") {
+						exportedData += "export " + data + "\n"
+					}
+				}
+
+				os.WriteFile(floc, []byte(exportedData), 0702)
 			} else {
 				// create an empty file
 				err = os.WriteFile(floc, []byte{}, 0702)
@@ -85,7 +92,7 @@ func loadAction(by_hook bool, file_path string) {
 		data, err := os.ReadFile(floc)
 		if err != nil {
 			if os.IsNotExist(err) {
-				msg = "echo No file found to load. use 'SyncEnv --init' first."
+				msg = "echo No file found to load. use 'SyncEnv init' first."
 			} else {
 				msg = "echo Some Unknown Error happened."
 			}
@@ -163,7 +170,9 @@ func _load_from_file(path string) (string, error) {
 	lines := strings.Split(string(data), "\n")
 
 	for _, line := range lines {
-		output += fmt.Sprintf("export %s\n", line)
+		if strings.Contains(line, "=") {
+			output += fmt.Sprintf("export %s\n", line)
+		}
 	}
 
 	return output, nil

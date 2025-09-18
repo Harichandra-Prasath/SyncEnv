@@ -60,7 +60,6 @@ func init() {
 	// Define the top level flags
 	flag.BoolVar(&peekFlag, "peek", false, "Flag used to have a glance at stored variables")
 	flag.BoolVar(&helpFlag, "help", false, "Flag used to show the help menu")
-	flag.StringVar(&migrateFlag, "with-file", "", "Flag used to add the local file on init")
 	flag.Var(&addFlag, "add", "Flag used to add variables")
 	flag.Var(&updateFlag, "update", "Flag used to update variables")
 	flag.StringVar(&portFlag, "port", "", "Flag used to port SyncEnv variables to file")

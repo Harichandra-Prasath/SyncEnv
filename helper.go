@@ -14,7 +14,7 @@ func loadSyncEnvFile(syncfile *SyncEnvFile) (string, string, error) {
 	_, err := os.Stat(floc)
 	if err != nil {
 		if os.IsNotExist(err) {
-			fmt.Printf("Current Directory is not added to SyncEnv!\nUse 'SyncEnv --init' first to add the current directory\n")
+			fmt.Printf("Current Directory is not added to SyncEnv!\nUse 'SyncEnv init' first to add the current directory\n")
 			return floc, chash, fmt.Errorf("syncenv file not found")
 		}
 	}
